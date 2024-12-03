@@ -1,0 +1,1 @@
+const solveBox = 'solve_box';
