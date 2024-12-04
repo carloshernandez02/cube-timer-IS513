@@ -12,6 +12,7 @@ Future<void> main() async{
   Hive.registerAdapters();
   await Hive.openBox<Solve>(solveBox);
   Get.put(PageIndex());
+  //Get.put(StopwatchController());
   runApp(const MyApp());
 }
 
