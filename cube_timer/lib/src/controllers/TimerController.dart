@@ -42,4 +42,9 @@ class StopwatchController extends GetxController {
     _timer?.cancel();
     super.onClose();
   }
+
+  bool isRunning() {
+    return _stopwatch.isRunning;
+  }
+
 }
