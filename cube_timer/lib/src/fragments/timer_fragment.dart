@@ -1,8 +1,11 @@
+import 'package:cube_timer/data/classes/solve.dart';
 import 'package:flutter/material.dart';
 import 'package:cube_timer/src/pages/Widgets/stopwatch_timer.dart';
 import 'package:cube_timer/src/controllers/TimerController.dart';
 import 'package:get/get.dart';
 import 'package:cube_timer/src/controllers/ScrambleGenerator.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:cube_timer/data/classes/box_names.dart';
 
 class Timer extends StatelessWidget {
   Timer({super.key});
@@ -17,6 +20,10 @@ class Timer extends StatelessWidget {
         onTap: () {
           if (controller.isRunning()) {
             controller.stop();
+            final finaltime = controller.duration;
+            print('Saving time: ${controller.duration.inMilliseconds}');
+            final solve = Solve(scramble: scrambleText.value, date: DateTime.now(), time: finaltime);
+            Hive.box<Solve>(solveBox).add(solve);
             scrambleText.value = generateScramble();
           } else {
             controller.reset();
