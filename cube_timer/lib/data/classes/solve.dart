@@ -5,7 +5,7 @@ class Solve extends HiveObject {
   final DateTime date;
   final Duration time;
   String? comment;
-  String? tag;
+  List<String>? tag;
   bool? dnf;
   bool? mas2;
 

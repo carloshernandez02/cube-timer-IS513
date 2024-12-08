@@ -21,14 +21,16 @@ class SolveAdapter extends TypeAdapter<Solve> {
       date: fields[1] as DateTime,
       time: fields[2] as Duration,
       comment: fields[3] as String?,
-      tag: fields[4] as String?,
-    );
+      tag: (fields[4] as List?)?.cast<String>(),
+    )
+      ..dnf = fields[5] as bool?
+      ..mas2 = fields[6] as bool?;
   }
 
   @override
   void write(BinaryWriter writer, Solve obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.scramble)
       ..writeByte(1)
@@ -38,7 +40,11 @@ class SolveAdapter extends TypeAdapter<Solve> {
       ..writeByte(3)
       ..write(obj.comment)
       ..writeByte(4)
-      ..write(obj.tag);
+      ..write(obj.tag)
+      ..writeByte(5)
+      ..write(obj.dnf)
+      ..writeByte(6)
+      ..write(obj.mas2);
   }
 
   @override
