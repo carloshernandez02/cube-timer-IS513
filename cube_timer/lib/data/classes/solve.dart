@@ -6,6 +6,8 @@ class Solve extends HiveObject {
   final Duration time;
   String? comment;
   String? tag;
+  bool? dnf;
+  bool? mas2;
 
   Solve({
     required this.scramble,
