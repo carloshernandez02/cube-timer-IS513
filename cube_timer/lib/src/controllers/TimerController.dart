@@ -1,11 +1,13 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class StopwatchController extends GetxController {
   final Stopwatch _stopwatch = Stopwatch();
   final RxString elapsedTime = '00:00.000'.obs;
   Timer? _timer;
-
+  final Rx<Color> timerColor = Colors.black.obs;
+  
   void start() {
     if (!_stopwatch.isRunning) {
       _stopwatch.start();
@@ -15,6 +17,7 @@ class StopwatchController extends GetxController {
       });
     }
   }
+
 
   void stop() {
     if (_stopwatch.isRunning) {
@@ -38,6 +41,7 @@ class StopwatchController extends GetxController {
     final milliseconds = threeDigits(duration.inMilliseconds.remainder(1000));
     return '$minutes:$seconds.$milliseconds';
   }
+
 
   get duration => _stopwatch.elapsed;
 

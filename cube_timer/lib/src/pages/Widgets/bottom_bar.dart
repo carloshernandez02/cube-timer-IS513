@@ -9,7 +9,9 @@ class BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => BottomNavigationBar(
+    return Obx(() => controladorIndice.isTimerRunning 
+    ? const SizedBox.shrink() 
+    : BottomNavigationBar(
         currentIndex: controladorIndice.currentIndex,
         onTap: (index) {
 

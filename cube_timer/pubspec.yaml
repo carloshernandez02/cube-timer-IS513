@@ -42,6 +42,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   hive_ce: ^2.8.0+2
   hive_ce_flutter: ^2.1.0
+  fl_chart: ^0.69.2
 
 
 dev_dependencies:

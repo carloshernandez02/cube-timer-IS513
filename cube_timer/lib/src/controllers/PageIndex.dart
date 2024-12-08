@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PageIndex extends GetxController {
-
+  late PageController pageController = PageController();
   final _currentIndex = 0.obs; 
-
+  final _isTimerRunning =  false.obs;
   int get currentIndex => _currentIndex.value;
 
   set currentIndex(int value){
@@ -15,8 +15,9 @@ class PageIndex extends GetxController {
     _currentIndex.value = value;
 
   }
+  bool get isTimerRunning => _isTimerRunning.value;
+  set isTimerRunning(bool value) => _isTimerRunning.value = value;
   
-  late PageController pageController = PageController();
 
 
 

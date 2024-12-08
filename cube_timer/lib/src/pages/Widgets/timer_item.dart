@@ -5,25 +5,31 @@ class TimerItem extends StatelessWidget {
   const TimerItem({
     super.key,
     required this.solve,
+    required this.onDelete,
   });
-
+  final VoidCallback onDelete;
   final Solve? solve;
-
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: Text(formatDate(solve?.date)),
       title: Text(formatTime(solve?.time ?? Duration.zero)),
       subtitle: Text(solve!.scramble),
-    
+      trailing: IconButton(onPressed: onDelete , icon: Icon(Icons.delete)),
       onTap: (){
         showBottomSheet(context: context, builder: (context){
-          print('Retrieved time: ${solve!.time.inMilliseconds}');
-          print('Formatted time: ${formatTime(solve!.time)}');
-
-          return Text("ejem testing"); //TODO: Enviar edicion de comentario y menu de etiquetas
+          TextEditingController commentText = TextEditingController();         
+          return Column(
+            children: [
+              TextField(
+                controller: commentText,
+                decoration: InputDecoration(
+                  labelText: 'Comentario',
+                ),
+              )
+            ],
+          ); //TODO: Enviar edicion de comentario y menu de etiquetas
         },
-        elevation: 50,
         enableDrag: true,
         showDragHandle: true,
         );
@@ -52,5 +58,6 @@ String formatDate(DateTime? date) {
   final day = date.day;
   final month = date.month;
   final year = date.year;
-  return '$day/$month/$year at $hour:$minute';
+  return '''$day/$month/$year 
+    $hour:$minute''';
 }

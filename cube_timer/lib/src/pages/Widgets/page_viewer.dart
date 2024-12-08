@@ -16,17 +16,21 @@ class PageViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PageView(
-        controller: controladorIndice.pageController,
-        children: [
-          Timer(),
-          Times(),
-          Summary()
-        ],
-        onPageChanged: (page){
-          controladorIndice.currentIndex = page;
-          print(controladorIndice.currentIndex);
-        },
-      );
+    return Obx( () => PageView(
+          controller: controladorIndice.pageController,
+          physics: controladorIndice.isTimerRunning
+          ? const NeverScrollableScrollPhysics()
+          : const AlwaysScrollableScrollPhysics(),
+          children: [
+            Timer(),
+            Times(),
+            Summary()
+          ],
+          onPageChanged: (page){
+            controladorIndice.currentIndex = page;
+            print(controladorIndice.currentIndex);
+          },
+        ),
+    );
   }
 }

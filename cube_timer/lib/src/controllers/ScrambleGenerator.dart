@@ -5,7 +5,6 @@ String generateScramble() {
   final moves = ['U', 'D', 'L', 'R', 'F', 'B'];
   final modifiers = ['', "'", '2'];
   String lastMove = '';
-  String lastAxis = '';
   String scramble = '';
 
   bool isSameAxis(String move1, String move2) {

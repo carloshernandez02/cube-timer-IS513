@@ -11,7 +11,7 @@ class TimerText extends StatelessWidget {
     return Obx(()=>
         Text(
         controller.elapsedTime.value,
-        style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+        style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: controller.timerColor.value),
       ),
     );
   }

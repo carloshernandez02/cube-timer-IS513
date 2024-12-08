@@ -8,11 +8,11 @@ import 'package:cube_timer/data/classes/solve.dart';
 import 'package:cube_timer/hive/hive_registar.g.dart';
 
 Future<void> main() async{
+
   await Hive.initFlutter();
   Hive.registerAdapters();
   await Hive.openBox<Solve>(solveBox);
   Get.put(PageIndex());
-  //Get.put(StopwatchController());
   runApp(const MyApp());
 }
 
