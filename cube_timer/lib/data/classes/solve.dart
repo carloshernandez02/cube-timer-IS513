@@ -6,8 +6,8 @@ class Solve extends HiveObject {
   final Duration time;
   String? comment;
   List<String>? tag;
-  bool? dnf;
-  bool? mas2;
+  bool dnf;
+  bool mas2;
 
   Solve({
     required this.scramble,
@@ -18,6 +18,7 @@ class Solve extends HiveObject {
     this.dnf=false,
     this.mas2=false,
   });
+
   
   Map<String, dynamic> toJson(){
     return{

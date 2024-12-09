@@ -11,7 +11,11 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('logo de la carrera.png'),backgroundColor: Colors.pink,),
+      appBar: AppBar(
+        title: Image(image: AssetImage('lib/assets/logo-carrera-ingenieria-en-sistemas.png'),width: 50,height: 50,),
+        backgroundColor: Colors.pink,
+        centerTitle: true,
+        ),
       body: PageViewer(),
       
       bottomNavigationBar:BottomBar(),

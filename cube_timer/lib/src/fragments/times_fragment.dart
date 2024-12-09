@@ -18,8 +18,7 @@ class Times extends StatelessWidget {
       child: ValueListenableBuilder(
         valueListenable: Hive.box<Solve>(solveBox).listenable(),
         builder: (context, Box<Solve> box, _) {
-          final solves =
-              box.values.toList().reversed.toList(); 
+          final solves = box.values.toList().reversed.toList();
           return CustomScrollView(
             slivers: [
               SliverPersistentHeader(
@@ -37,7 +36,7 @@ class Times extends StatelessWidget {
                           );
                         }
                       },
-                      child: const Text('Delete All Times'),
+                      child: const Text('Borrar todos los tiempos'),
                     ),
                   ),
                 ),
@@ -59,21 +58,24 @@ class Times extends StatelessWidget {
                               .toList()[index];
                           final solve = entry.value;
                           final solveKey = entry.key;
-                          final commentController = TextEditingController(text: solve.comment);
+                          final commentController =
+                              TextEditingController(text: solve.comment);
 
                           return TimerItem(
                             solve: solve,
                             commentText: commentController,
                             commentChange: () {
                               solve.comment = commentController.text;
-                              box.put(solveKey, solve); // Guardar cambios en Hive
+                              box.put(solveKey, solve);
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Comentario guardado')),
+                                const SnackBar(
+                                    content: Text('Comentario guardado')),
                               );
                             },
                             onDelete: () {
                               box.delete(solveKey);
                             },
+                            
                           );
                         },
                         childCount: solves.length,

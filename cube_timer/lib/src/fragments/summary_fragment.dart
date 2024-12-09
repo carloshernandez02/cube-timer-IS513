@@ -35,14 +35,14 @@ class Summary extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             const Text(
-              'Line Graph: Solve Times',
+              'Grafica de tiempo de resoluciones',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             LineGraph(times: times),
             const SizedBox(height: 30),
             const Text(
-              'Bar Graph: Solve Time Distribution',
+              'Grafica de distribucion de frecuencias',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
@@ -53,14 +53,14 @@ class Summary extends StatelessWidget {
               children: [
                 Obx(
                   ()=> StatItem(
-                    title: 'Personal Best',
+                    title: 'Record Personal',
                     stat: pbController.personalBest.value != null
                         ? _formatDuration(pbController.personalBest.value)
                         : 'N/A',
                   ),
                 ),
                 StatItem(
-                  title: 'Total Solves',
+                  title: 'Total de resoluciones',
                   stat: solvesBox.length.toString(),
                 ),
               ],

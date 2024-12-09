@@ -23,8 +23,8 @@ class SolveAdapter extends TypeAdapter<Solve> {
       comment: fields[3] as String?,
       tag: (fields[4] as List?)?.cast<String>(),
     )
-      ..dnf = fields[5] as bool?
-      ..mas2 = fields[6] as bool?;
+      ..dnf = fields[5] as bool
+      ..mas2 = fields[6] as bool;
   }
 
   @override
