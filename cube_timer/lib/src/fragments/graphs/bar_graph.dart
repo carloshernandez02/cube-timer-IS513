@@ -55,7 +55,7 @@ class BarGraph extends StatelessWidget {
                       if (index < 0 || index >= sortedRanges.length) {
                         return const SizedBox.shrink();
                       }
-                      return Text(sortedRanges[index], style: const TextStyle(fontSize: 10),);
+                      return Text(sortedRanges[index], style: const TextStyle(fontSize: 8),);
                     },
                     reservedSize: 30,
                   ),

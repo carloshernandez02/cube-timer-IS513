@@ -19,7 +19,7 @@ class StatFuncs {
       String? aoX;
 
       final averageMs =
-          (lastXTimes.reduce((a, b) => a + b) / (lastXTimes.length.toDouble()-2));
+          (lastXTimes.reduce((a, b) => a + b) / (lastXTimes.length.toDouble()));
 
       final duration = Duration(milliseconds: averageMs.round());
       String twoDigits(int n) => n.toString().padLeft(2, '0');
