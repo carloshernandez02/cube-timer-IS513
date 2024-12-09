@@ -75,7 +75,8 @@ class Times extends StatelessWidget {
                             onDelete: () {
                               box.delete(solveKey);
                             },
-                            
+                            solveKey: solveKey, // Pass the key
+                            box: box, // Pass the Hive box
                           );
                         },
                         childCount: solves.length,

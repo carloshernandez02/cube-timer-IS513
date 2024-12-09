@@ -1,7 +1,8 @@
-import 'package:cube_timer/src/controllers/Solve_Controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cube_timer/src/controllers/Solve_Controller.dart';
 import 'package:cube_timer/data/classes/solve.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 
 class TimerItem extends StatelessWidget {
   TimerItem({
@@ -10,95 +11,98 @@ class TimerItem extends StatelessWidget {
     required this.onDelete,
     required this.commentChange,
     required this.commentText,
+    required this.solveKey,
+    required this.box,
   });
 
   final VoidCallback onDelete;
   final VoidCallback commentChange;
   final Solve solve;
   final TextEditingController commentText;
+  final dynamic solveKey;
+  final Box<Solve> box;
 
   @override
   Widget build(BuildContext context) {
-    // Crear e inicializar el controlador con el objeto Solve
+    // Initialize SolveController
     final SolveController controller = Get.put(SolveController());
-    controller.initialize(solve);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (controller.solveKey != solveKey) {
+        // Only initialize if the solveKey is different
+        controller.initialize(solve, solveKey, box);
+      }
+    });
 
     return Padding(
       padding: const EdgeInsets.only(left: 5, right: 5),
       child: Card(
-        child: GetBuilder<SolveController>(
-          init: controller,
-          builder: (_) {
-            return ListTile(
-              title: Row(
-                children: [
-                  Text(
-                    formatTime(controller.solve.time),
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                ],
+        child: ListTile(
+          title: Row(
+            children: [
+              Text(
+                formatTime(solve.time),
+                style: const TextStyle(fontSize: 20),
               ),
-              trailing: IconButton(
-                  onPressed: onDelete, icon: const Icon(Icons.delete)),
-              subtitle: controller.solve.comment != null
-                  ? Text(controller.solve.comment!)
-                  : null,
-              onTap: () {
-                showBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8, right: 8),
-                        child: Column(
-                          children: [
-                            TextField(
-                              controller: commentText,
-                              decoration: const InputDecoration(
-                                labelText: 'Comentario',
-                                border: OutlineInputBorder(),
-                              ),
-                              onChanged: (value) {
-                                commentText.text = value;
-                              },
-                            ),
-                            ElevatedButton(
-                              onPressed: commentChange,
-                              child: const Text('Guardar comentario'),
-                            ),
-                            Obx(
-                              () => SwitchListTile(
-                                title: const Text("DNF"),
-                                value: controller.solve.dnf,
-                                onChanged: (bool value) {
-                                  controller.solve.dnf = value;
-                                  if (value) {
-                                    controller.solve.mas2=false;
-                                  }
-                                },
-                              ),
-                            ),
-                            Obx(
-                              () => SwitchListTile(
-                                title: const Text("+2"),
-                                value: controller.solve.mas2,
-                                onChanged: (bool value){
-                                  controller.solve.mas2 = value;
-                                  if (value) {
-                                    controller.solve.dnf=false;
-                                  }
-                                }
-                              ),
-                            ),
-                          ],
+            ],
+          ),
+          trailing: IconButton(
+            onPressed: onDelete,
+            icon: const Icon(Icons.delete),
+          ),
+          subtitle:
+              solve.comment != null ? Text(solve.comment!) : null,
+          onTap: () {
+            showBottomSheet(
+              context: context,
+              builder: (context) {
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8, right: 8),
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: commentText,
+                          decoration: const InputDecoration(
+                            labelText: 'Comentario',
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            commentText.text = value;
+                          },
                         ),
-                      ),
-                    );
-                  },
-                  enableDrag: true,
-                  showDragHandle: true,
+                        ElevatedButton(
+                          onPressed: commentChange,
+                          child: const Text('Guardar comentario'),
+                        ),
+                        GetBuilder<SolveController>(
+                          builder: (_) {
+                            return SwitchListTile(
+                              title: const Text("DNF"),
+                              value: controller.solve.dnf,
+                              onChanged: (bool value) {
+                                controller.toggleDNF(value);
+                              },
+                            );
+                          },
+                        ),
+                        GetBuilder<SolveController>(
+                          builder: (_) {
+                            return SwitchListTile(
+                              title: const Text("+2"),
+                              value: controller.solve.mas2,
+                              onChanged: (bool value) {
+                                controller.toggleMas2(value);
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               },
+              enableDrag: true,
+              showDragHandle: true,
             );
           },
         ),
