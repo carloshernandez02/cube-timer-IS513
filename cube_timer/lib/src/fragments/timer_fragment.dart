@@ -8,23 +8,25 @@ import 'package:cube_timer/src/controllers/ScrambleGenerator.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:cube_timer/data/classes/box_names.dart';
 import 'package:cube_timer/src/controllers/PBController.dart';
+import 'package:cube_timer/src/pages/Widgets/stat_item.dart';
+import 'package:cube_timer/data/stat_funcs.dart';
 
 class Timer extends StatelessWidget {
   Timer({super.key});
 
-  final PBController pbController = Get.put(PBController()); 
+  final PBController pbController = Get.put(PBController());
   final StopwatchController controller = Get.put(StopwatchController());
   final PageIndex pageController = Get.find<PageIndex>();
   final RxString scrambleText = generateScramble().obs;
   final delay = Stopwatch();
   late final Duration? currentPB;
   late final bool isPB;
+  final stats = StatFuncs();
 
-  // Obtener el PB actual
   Duration? getPersonalBest(Box<Solve> box) {
     if (box.isEmpty) return null;
     return box.values
-        .where((solve) => solve.dnf != true) // Ignorar tiempos DNF
+        .where((solve) => solve.dnf != true)
         .map((solve) => solve.time)
         .reduce((value, element) => value < element ? value : element);
   }
@@ -72,7 +74,6 @@ class Timer extends StatelessWidget {
 
             final box = Hive.box<Solve>(solveBox);
 
-            // Verificar si es un nuevo PB
             currentPB = getPersonalBest(box);
             isPB = currentPB == null || finaltime < currentPB;
 
@@ -82,7 +83,6 @@ class Timer extends StatelessWidget {
               time: finaltime,
             );
 
-            // Guardar el tiempo
             box.add(solve);
 
             pbController.updatePB(finaltime);
@@ -135,8 +135,8 @@ class Timer extends StatelessWidget {
                           final lastKey = box.keys.last;
                           final Solve? lastSolve = box.get(lastKey);
                           if (lastSolve != null) {
-                            lastSolve.dnf = true; // Marcar como DNF
-                            lastSolve.save(); // Guardar cambios
+                            lastSolve.dnf = true;
+                            lastSolve.save();
                           }
                         },
                         child: const Text('DNF'),
@@ -147,8 +147,8 @@ class Timer extends StatelessWidget {
                           final lastKey = box.keys.last;
                           final Solve? lastSolve = box.get(lastKey);
                           if (lastSolve != null) {
-                            lastSolve.mas2 = true; // Marcar como +2
-                            lastSolve.save(); // Guardar cambios
+                            lastSolve.mas2 = true;
+                            lastSolve.save();
                           }
                         },
                         child: const Text('+2'),
@@ -157,6 +157,19 @@ class Timer extends StatelessWidget {
                 );
               },
             ),
+            controller.isRunning()
+                ? const SizedBox.shrink()
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Column(
+                        children: [
+                          StatItem(title: 'Ao5', stat: stats.aox(5)),
+                          StatItem(title: 'Ao12', stat: stats.aox(12)),
+                        ],
+                      )
+                    ],
+                  )
           ],
         ),
       ),

@@ -25,7 +25,7 @@ class PageViewer extends StatelessWidget {
             Summary(),
           ],
           onPageChanged: (page) {
-            // Ocultar cualquier BottomSheet abierto
+            
             if (Navigator.canPop(context)) {
               Navigator.pop(context);
             }

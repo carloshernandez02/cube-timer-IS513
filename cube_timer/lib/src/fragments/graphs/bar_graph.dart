@@ -15,8 +15,8 @@ class BarGraph extends StatelessWidget {
       final stat = StatFuncs();
       final Map<String, int> distribution = {};
 
-      // Calculate the range size based on the desired number of bars
-      const int desiredBars = 5; // Number of bars you want
+     
+      const int desiredBars = 5; 
       final timesInSeconds = times.map((time) => time / 1000).toList();
       final minTime = timesInSeconds.reduce((a, b) => a < b ? a : b);
       final maxTime = timesInSeconds.reduce((a, b) => a > b ? a : b);

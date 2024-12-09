@@ -19,7 +19,7 @@ class Times extends StatelessWidget {
         valueListenable: Hive.box<Solve>(solveBox).listenable(),
         builder: (context, Box<Solve> box, _) {
           final solves =
-              box.values.toList().reversed.toList(); // Reverse for recent-first
+              box.values.toList().reversed.toList(); 
           return CustomScrollView(
             slivers: [
               SliverPersistentHeader(
@@ -31,7 +31,7 @@ class Times extends StatelessWidget {
                       onPressed: () {
                         if (solves.isNotEmpty) {
                           box.clear();
-                          pb.personalBest.value=null;
+                          pb.personalBest.value = null;
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('All times deleted')),
                           );
@@ -51,7 +51,6 @@ class Times extends StatelessWidget {
                   : SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
-                          // Get the solve and its key directly from entries
                           final entry = box
                               .toMap()
                               .entries
@@ -60,13 +59,21 @@ class Times extends StatelessWidget {
                               .toList()[index];
                           final solve = entry.value;
                           final solveKey = entry.key;
+                          final commentController = TextEditingController(text: solve.comment);
 
                           return TimerItem(
                             solve: solve,
-                            onDelete: () {
-                              Hive.box<Solve>(solveBox).delete(solveKey);
+                            commentText: commentController,
+                            commentChange: () {
+                              solve.comment = commentController.text;
+                              box.put(solveKey, solve); // Guardar cambios en Hive
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Comentario guardado')),
+                              );
                             },
-
+                            onDelete: () {
+                              box.delete(solveKey);
+                            },
                           );
                         },
                         childCount: solves.length,

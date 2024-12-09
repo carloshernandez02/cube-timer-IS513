@@ -12,27 +12,33 @@ class StatFuncs {
     ..sort();
 
   String? aox(int timeCount) {
-    final lastXTimes = sortedTimes.sublist(sortedTimes.length - timeCount);
-    String? aoX;
-
-    final averageMs =
-        (lastXTimes.reduce((a, b) => a + b) / lastXTimes.length.toDouble());
-
-    final duration = Duration(milliseconds: averageMs.round());
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    String threeDigits(int n) => n.toString().padLeft(3, '0');
-
-    if (duration > const Duration(minutes: 1)) {
-      final minutes = twoDigits(duration.inMinutes.remainder(60));
-      final seconds = twoDigits(duration.inSeconds.remainder(60));
-      final milliseconds = threeDigits(duration.inMilliseconds.remainder(1000));
-      aoX = '$minutes:$seconds.$milliseconds';
+    if (sortedTimes.length < timeCount) {
+      return 'N/A';
     } else {
-      final seconds = twoDigits(duration.inSeconds.remainder(60));
-      final milliseconds = threeDigits(duration.inMilliseconds.remainder(1000));
-      aoX = '$seconds.$milliseconds';
+      final lastXTimes = sortedTimes.sublist(sortedTimes.length - timeCount);
+      String? aoX;
+
+      final averageMs =
+          (lastXTimes.reduce((a, b) => a + b) / (lastXTimes.length.toDouble()-2));
+
+      final duration = Duration(milliseconds: averageMs.round());
+      String twoDigits(int n) => n.toString().padLeft(2, '0');
+      String threeDigits(int n) => n.toString().padLeft(3, '0');
+
+      if (duration > const Duration(minutes: 1)) {
+        final minutes = twoDigits(duration.inMinutes.remainder(60));
+        final seconds = twoDigits(duration.inSeconds.remainder(60));
+        final milliseconds =
+            threeDigits(duration.inMilliseconds.remainder(1000));
+        aoX = '$minutes:$seconds.$milliseconds';
+      } else {
+        final seconds = twoDigits(duration.inSeconds.remainder(60));
+        final milliseconds =
+            threeDigits(duration.inMilliseconds.remainder(1000));
+        aoX = '$seconds.$milliseconds';
+      }
+      return aoX;
     }
-    return aoX;
   }
 
   String mediaBruta() {

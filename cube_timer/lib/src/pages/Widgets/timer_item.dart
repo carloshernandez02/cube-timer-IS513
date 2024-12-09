@@ -2,13 +2,19 @@ import 'package:cube_timer/data/classes/solve.dart';
 import 'package:flutter/material.dart';
 
 class TimerItem extends StatelessWidget {
-  const TimerItem({
+  TimerItem({
     super.key,
     required this.solve,
     required this.onDelete,
+    required this.commentChange,
+    required this.commentText,
   });
+
   final VoidCallback onDelete;
+  final VoidCallback commentChange;
   final Solve? solve;
+  final TextEditingController commentText;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -19,62 +25,68 @@ class TimerItem extends StatelessWidget {
             children: [
               Text(
                 formatTime(solve?.time ?? Duration.zero),
-                style: TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 20),
               ),
             ],
           ),
-          trailing: IconButton(onPressed: onDelete, icon: Icon(Icons.delete)),
+          trailing: IconButton(onPressed: onDelete, icon: const Icon(Icons.delete)),
           subtitle: solve?.comment != null ? Text('${solve!.comment}') : null,
           onTap: () {
             showBottomSheet(
               context: context,
               builder: (context) {
-                TextEditingController commentText = TextEditingController();
                 return SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8, right: 8),
                     child: Column(
                       children: [
-                        (TextField(
+                        TextField(
                           controller: commentText,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Comentario',
                             border: OutlineInputBorder(),
                           ),
-                          onChanged: (value) => solve?.comment,
-                        )),
+                          onChanged: (value) {
+                            commentText.text = value; // Actualiza el texto local
+                          },
+                        ),
+                        ElevatedButton(
+                          onPressed: commentChange,
+                          child: const Text('Guardar comentario'),
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(top: 10, bottom: 10),
                           child: Row(
                             children: [
                               Card(
-                                  child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Text(
-                                  formatDate(solve?.date),
-                                  textAlign: TextAlign.start,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text(
+                                    formatDate(solve?.date),
+                                    textAlign: TextAlign.start,
+                                  ),
                                 ),
-                              )),
+                              ),
                               Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 5, right: 5),
+                                padding: const EdgeInsets.only(left: 5, right: 5),
                                 child: SizedBox(
-                                    child: Card(
-                                        child: Padding(
+                                  child: Card(
+                                    child: Padding(
                                       padding: const EdgeInsets.all(10),
                                       child: Text(solve!.scramble),
-                                    )),
-                                    width: 275),
+                                    ),
+                                  ),
+                                  width: 275,
+                                ),
                               ),
                             ],
                           ),
                         ),
                         Text(solve!.dnf.toString()),
                       ],
-                      
                     ),
                   ),
-                ); //TODO: Enviar edicion de comentario y menu de etiquetas
+                );
               },
               enableDrag: true,
               showDragHandle: true,
@@ -88,7 +100,7 @@ class TimerItem extends StatelessWidget {
 
 String formatTime(Duration time) {
   final milliseconds = (time.inMilliseconds % 1000).toString().padLeft(3, '0');
-  if (time < Duration(minutes: 1)) {
+  if (time < const Duration(minutes: 1)) {
     return '${time.inSeconds}.$milliseconds';
   } else {
     final minutes = time.inMinutes;

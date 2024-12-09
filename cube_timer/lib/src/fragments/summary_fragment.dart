@@ -14,7 +14,7 @@ class Summary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pbController = Get.find<PBController>(); // Obtén el controlador
+    final pbController = Get.find<PBController>(); 
     final solvesBox = Hive.box<Solve>(solveBox);
     final solves = solvesBox.values.toList();
     final StatFuncs stats = StatFuncs();
@@ -25,7 +25,7 @@ class Summary extends StatelessWidget {
       );
     }
 
-    // Extract times and sort them
+    
     final times = solves.map((solve) => solve.time.inMilliseconds).toList();
 
     return SingleChildScrollView(
@@ -65,7 +65,7 @@ class Summary extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -79,6 +79,20 @@ class Summary extends StatelessWidget {
                 ),
               ],
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                StatItem(title:'Ao5', stat: stats.aox(5)),
+                StatItem(title:'Ao12', stat: stats.aox(12)),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                StatItem(title:'Ao50', stat: stats.aox(50)),
+                StatItem(title:'Ao100', stat: stats.aox(100)),
+              ],
+            )
           ],
         ),
       ),
