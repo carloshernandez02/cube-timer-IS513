@@ -3,14 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:cube_timer/data/classes/box_names.dart';
 import 'package:cube_timer/data/classes/solve.dart';
+import 'package:get/get.dart';
+import 'package:cube_timer/src/controllers/PBController.dart';
 
 class Times extends StatelessWidget {
   Times({super.key});
 
+  final pb = Get.find<PBController>();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 32.0),
+      padding: const EdgeInsets.only(top: 5.0),
       child: ValueListenableBuilder(
         valueListenable: Hive.box<Solve>(solveBox).listenable(),
         builder: (context, Box<Solve> box, _) {
@@ -27,6 +31,7 @@ class Times extends StatelessWidget {
                       onPressed: () {
                         if (solves.isNotEmpty) {
                           box.clear();
+                          pb.personalBest.value=null;
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('All times deleted')),
                           );
@@ -61,6 +66,7 @@ class Times extends StatelessWidget {
                             onDelete: () {
                               Hive.box<Solve>(solveBox).delete(solveKey);
                             },
+
                           );
                         },
                         childCount: solves.length,

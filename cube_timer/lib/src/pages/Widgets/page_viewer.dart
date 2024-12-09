@@ -10,27 +10,28 @@ class PageViewer extends StatelessWidget {
     super.key,
   });
 
-  
-
   final PageIndex controladorIndice = Get.find<PageIndex>();
 
   @override
   Widget build(BuildContext context) {
-    return Obx( () => PageView(
+    return Obx(() => PageView(
           controller: controladorIndice.pageController,
           physics: controladorIndice.isTimerRunning
-          ? const NeverScrollableScrollPhysics()
-          : const AlwaysScrollableScrollPhysics(),
+              ? const NeverScrollableScrollPhysics()
+              : const AlwaysScrollableScrollPhysics(),
           children: [
             Timer(),
             Times(),
-            Summary()
+            Summary(),
           ],
-          onPageChanged: (page){
+          onPageChanged: (page) {
+            // Ocultar cualquier BottomSheet abierto
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            }
             controladorIndice.currentIndex = page;
             print(controladorIndice.currentIndex);
           },
-        ),
-    );
+        ));
   }
 }

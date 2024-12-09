@@ -15,6 +15,8 @@ class Solve extends HiveObject {
     required this.time,
     this.comment,
     this.tag,
+    this.dnf=false,
+    this.mas2=false,
   });
   
   Map<String, dynamic> toJson(){

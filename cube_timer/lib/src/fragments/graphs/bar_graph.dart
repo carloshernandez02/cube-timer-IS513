@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:cube_timer/data/stat_funcs.dart';
 
 class BarGraph extends StatelessWidget {
   final List<int> times;
@@ -8,68 +9,85 @@ class BarGraph extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Group times into ranges (e.g., 0-5s, 5-10s, etc.)
-    final Map<String, int> distribution = {};
-    for (var time in times) {
-      final seconds = time ~/ 1000; // Convert milliseconds to seconds
-      final range = '${(seconds ~/ 5) * 5}-${((seconds ~/ 5) + 1) * 5}s';
-      distribution[range] = (distribution[range] ?? 0) + 1;
-    }
+    if (times.length <= 1 || times.isEmpty) {
+      return Card(child: Text('No hay suficientes tiempos'));
+    } else {
+      final stat = StatFuncs();
+      final Map<String, int> distribution = {};
 
-    final sortedRanges = distribution.keys.toList()
-      ..sort((a, b) => int.parse(a.split('-').first)
-          .compareTo(int.parse(b.split('-').first)));
+      // Calculate the range size based on the desired number of bars
+      const int desiredBars = 5; // Number of bars you want
+      final timesInSeconds = times.map((time) => time / 1000).toList();
+      final minTime = timesInSeconds.reduce((a, b) => a < b ? a : b);
+      final maxTime = timesInSeconds.reduce((a, b) => a > b ? a : b);
+      final totalRange = maxTime - minTime;
+      final rangeSize = totalRange / desiredBars;
 
-    //TODO: Meterle ***DISEÑO*** 
-    return AspectRatio(
-      aspectRatio: 1.5,
-      child: Card(
-        child: BarChart(
-          BarChartData(
-            gridData: FlGridData(show: false),
-            titlesData: FlTitlesData(
-              topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  getTitlesWidget: (value, meta) {
-                    final index = value.toInt();
-                    if (index < 0 || index >= sortedRanges.length) {
-                      return const SizedBox.shrink();
-                    }
-                    return Text(sortedRanges[index]);
-                  },
-                  reservedSize: 30,
+      for (var time in timesInSeconds) {
+        final lowerBound =
+            ((time - minTime) / rangeSize).floor() * rangeSize + minTime;
+        final upperBound = lowerBound + rangeSize;
+        final range =
+            '${lowerBound.toStringAsFixed(2)}-${upperBound.toStringAsFixed(2)}s';
+        distribution[range] = (distribution[range] ?? 0) + 1;
+      }
+
+      final sortedRanges = distribution.keys.toList()
+        ..sort((a, b) => double.parse(a.split('-').first)
+            .compareTo(double.parse(b.split('-').first)));
+
+      return AspectRatio(
+        aspectRatio: 1.5,
+        child: Card(
+          child: BarChart(
+            BarChartData(
+              gridData: FlGridData(show: false),
+              titlesData: FlTitlesData(
+                topTitles:
+                    AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                leftTitles:
+                    AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: (value, meta) {
+                      final index = value.toInt();
+                      if (index < 0 || index >= sortedRanges.length) {
+                        return const SizedBox.shrink();
+                      }
+                      return Text(sortedRanges[index], style: const TextStyle(fontSize: 10),);
+                    },
+                    reservedSize: 30,
+                  ),
                 ),
               ),
-            ),
-            borderData: FlBorderData(
-              show: true,
-              border: const Border(
-                left: BorderSide(color: Colors.black),
-                bottom: BorderSide(color: Colors.black),
+              borderData: FlBorderData(
+                show: true,
+                border: const Border(
+                  right: BorderSide(color: Colors.black),
+                  bottom: BorderSide(color: Colors.black),
+                ),
               ),
+              barGroups: sortedRanges
+                  .asMap()
+                  .entries
+                  .map(
+                    (entry) => BarChartGroupData(
+                      x: entry.key,
+                      barRods: [
+                        BarChartRodData(
+                          toY: distribution[entry.value]!.toDouble(),
+                          width: 20,
+                          color: Colors.green,
+                        ),
+                      ],
+                    ),
+                  )
+                  .toList(),
             ),
-            barGroups: sortedRanges
-                .asMap()
-                .entries
-                .map(
-                  (entry) => BarChartGroupData(
-                    x: entry.key,
-                    barRods: [
-                      BarChartRodData(
-                        toY: distribution[entry.value]!.toDouble(),
-                        width: 20,
-                        color: Colors.green,
-                      ),
-                    ],
-                  ),
-                )
-                .toList(),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 }

@@ -1,17 +1,20 @@
+import 'package:cube_timer/src/controllers/PBController.dart';
 import 'package:cube_timer/src/fragments/graphs/bar_graph.dart';
 import 'package:cube_timer/src/fragments/graphs/line_graph.dart';
 import 'package:cube_timer/src/pages/Widgets/stat_item.dart';
 import 'package:flutter/material.dart';
 import 'package:cube_timer/data/classes/solve.dart';
+import 'package:get/get.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:cube_timer/data/classes/box_names.dart';
 import 'package:cube_timer/data/stat_funcs.dart';
 
 class Summary extends StatelessWidget {
   const Summary({super.key});
-  //TODO: Meterle ***DISEÑO*** 
+
   @override
   Widget build(BuildContext context) {
+    final pbController = Get.find<PBController>(); // Obtén el controlador
     final solvesBox = Hive.box<Solve>(solveBox);
     final solves = solvesBox.values.toList();
     final StatFuncs stats = StatFuncs();
@@ -48,15 +51,32 @@ class Summary extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                StatItem(title: 'Promedio Bruto',stat: stats.mediaBruta(),),
-                StatItem(title: 'Desviacion estandar',stat: stats.desviacionEstandar(),),
+                Obx(
+                  ()=> StatItem(
+                    title: 'Personal Best',
+                    stat: pbController.personalBest.value != null
+                        ? _formatDuration(pbController.personalBest.value)
+                        : 'N/A',
+                  ),
+                ),
+                StatItem(
+                  title: 'Total Solves',
+                  stat: solvesBox.length.toString(),
+                ),
               ],
             ),
-            SizedBox(height: 20,),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                StatItem(title: 'Resoluciones totales',stat: solvesBox.length.toDouble(),),
+                StatItem(
+                  title: 'Promedio Bruto',
+                  stat: stats.mediaBruta(),
+                ),
+                StatItem(
+                  title: 'Desviacion estandar',
+                  stat: stats.desviacionEstandar(),
+                ),
               ],
             ),
           ],
@@ -65,3 +85,21 @@ class Summary extends StatelessWidget {
     );
   }
 }
+
+String _formatDuration(Duration? duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    String threeDigits(int n) => n.toString().padLeft(3, '0');
+    String average;
+
+    if (duration! > const Duration(minutes: 1)) {
+      final minutes = twoDigits(duration!.inMinutes.remainder(60));
+      final seconds = twoDigits(duration.inSeconds.remainder(60));
+      final milliseconds = threeDigits(duration.inMilliseconds.remainder(1000));
+      average = '$minutes:$seconds.$milliseconds';
+    } else {
+      final seconds = twoDigits(duration!.inSeconds.remainder(60));
+      final milliseconds = threeDigits(duration.inMilliseconds.remainder(1000));
+      average = '$seconds.$milliseconds';
+    }
+    return average;
+  }

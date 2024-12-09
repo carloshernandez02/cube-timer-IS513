@@ -14,15 +14,17 @@ class BottomBar extends StatelessWidget {
     : BottomNavigationBar(
         currentIndex: controladorIndice.currentIndex,
         onTap: (index) {
-
+          // Ocultar cualquier BottomSheet abierto
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
           controladorIndice.changePage(index);
-
         },
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.timer), label: 'Temporizador'),
           BottomNavigationBarItem(icon: Icon(Icons.view_timeline_sharp), label: 'Tiempos'),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart_rounded), label: 'Estadisticas'),
-        ]
+          BottomNavigationBarItem(icon: Icon(Icons.bar_chart_rounded), label: 'Estadísticas'),
+        ],
       )
     );
   }

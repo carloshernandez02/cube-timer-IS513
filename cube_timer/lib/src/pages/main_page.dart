@@ -11,6 +11,7 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text('logo de la carrera.png'),backgroundColor: Colors.pink,),
       body: PageViewer(),
       
       bottomNavigationBar:BottomBar(),
